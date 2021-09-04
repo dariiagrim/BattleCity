@@ -15,6 +15,7 @@
 		C37A954626E3AD42008A2BF8 /* AnotherScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A954526E3AD42008A2BF8 /* AnotherScene.swift */; };
 		C37A954E26E3D799008A2BF8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A954D26E3D799008A2BF8 /* Constants.swift */; };
 		C37A955126E3DFD6008A2BF8 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A955026E3DFD6008A2BF8 /* Levels.swift */; };
+		C37A955426E40D82008A2BF8 /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A955326E40D82008A2BF8 /* Structs.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		C37A954526E3AD42008A2BF8 /* AnotherScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnotherScene.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		C37A954D26E3D799008A2BF8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C37A955026E3DFD6008A2BF8 /* Levels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Levels.swift; sourceTree = "<group>"; };
+		C37A955326E40D82008A2BF8 /* Structs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 				C37A953D26E3A90F008A2BF8 /* BattleCity.entitlements */,
 				C37A954D26E3D799008A2BF8 /* Constants.swift */,
 				C37A955026E3DFD6008A2BF8 /* Levels.swift */,
+				C37A955326E40D82008A2BF8 /* Structs.swift */,
 			);
 			path = BattleCity;
 			sourceTree = "<group>";
@@ -147,6 +150,7 @@
 				C37A955126E3DFD6008A2BF8 /* Levels.swift in Sources */,
 				C37A954E26E3D799008A2BF8 /* Constants.swift in Sources */,
 				C37A954626E3AD42008A2BF8 /* AnotherScene.swift in Sources */,
+				C37A955426E40D82008A2BF8 /* Structs.swift in Sources */,
 				C37A953626E3A90D008A2BF8 /* ViewController.swift in Sources */,
 				C37A953426E3A90D008A2BF8 /* GameScene.swift in Sources */,
 				C37A952E26E3A90D008A2BF8 /* AppDelegate.swift in Sources */,

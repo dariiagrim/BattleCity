@@ -12,4 +12,6 @@ struct Constants {
     static let downArrow: UInt16 = 0x7D
     static let rightArrow: UInt16 = 0x7C
     static let leftArrow: UInt16 = 0x7B
+    static let space: UInt16 = 0x31
 }
+
