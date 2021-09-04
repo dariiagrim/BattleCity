@@ -10,23 +10,48 @@ import SpriteKit
 
 class AnotherScene: SKScene {
     
-    private var gameZone :SKSpriteNode!
-    private var player   :SKSpriteNode!
+    private var gameZone: SKSpriteNode!
+    private var player: SKSpriteNode!
+    private var base: SKSpriteNode!
     
     override func didMove(to view: SKView) {
         backgroundColor = #colorLiteral(red: 0.4454482198, green: 0.4839535356, blue: 0.5355114341, alpha: 1)
         
-        gameZone = SKSpriteNode(color: .black, size: CGSize(width: self.size.width - 150, height: self.size.height - 50))
-        gameZone.position = CGPoint(x: 40, y: (size.height - gameZone.size.height) / 2)
+        gameZone = SKSpriteNode(color: .black, size: CGSize(width: 640, height: 560))
+        gameZone.position = CGPoint(x: 40, y: 20)
         gameZone.anchorPoint = CGPoint(x: 0, y: 0)
         player = SKSpriteNode(imageNamed: "player")
         player.size = CGSize(width: 40, height: 40)
         player.position = CGPoint(x: gameZone.size.width / 2 - 80, y: 20)
+        player.physicsBody = SKPhysicsBody(rectangleOf: player.size)
+        player.physicsBody?.affectedByGravity = false
+        base = SKSpriteNode(imageNamed: "base")
+        base.size = CGSize(width: 40, height: 40)
+        base.position = CGPoint(x: gameZone.size.width / 2, y: 20)
+        base.physicsBody = SKPhysicsBody(rectangleOf: base.size)
+        base.physicsBody?.affectedByGravity = false
+        
+        for (indexY, val)  in level1.reversed().enumerated() {
+            for (indexX, wall) in val.enumerated() {
+                if wall == 1 {
+                    let wallNode = SKSpriteNode(imageNamed: "wall")
+                    wallNode.size = CGSize(width: 20, height: 20)
+                    wallNode.position = CGPoint(x: indexX * 20 + 10, y: indexY * 20 + 10)
+                    wallNode.physicsBody = SKPhysicsBody(rectangleOf: wallNode.size)
+                    wallNode.physicsBody?.affectedByGravity = false
+                    wallNode.physicsBody?.isDynamic = false
+                    gameZone.addChild(wallNode)
+                }
+            }
+        }
+        
+        
         
         gameZone.addChild(player)
+        gameZone.addChild(base)
         
         addChild(gameZone)
-    
+        
     }
     
     override func mouseDown(with event: NSEvent) {

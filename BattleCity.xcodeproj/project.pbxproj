@@ -14,6 +14,7 @@
 		C37A953B26E3A90F008A2BF8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C37A953926E3A90F008A2BF8 /* Main.storyboard */; };
 		C37A954626E3AD42008A2BF8 /* AnotherScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A954526E3AD42008A2BF8 /* AnotherScene.swift */; };
 		C37A954E26E3D799008A2BF8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A954D26E3D799008A2BF8 /* Constants.swift */; };
+		C37A955126E3DFD6008A2BF8 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A955026E3DFD6008A2BF8 /* Levels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		C37A953D26E3A90F008A2BF8 /* BattleCity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BattleCity.entitlements; sourceTree = "<group>"; };
 		C37A954526E3AD42008A2BF8 /* AnotherScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnotherScene.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		C37A954D26E3D799008A2BF8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		C37A955026E3DFD6008A2BF8 /* Levels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Levels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				C37A953C26E3A90F008A2BF8 /* Info.plist */,
 				C37A953D26E3A90F008A2BF8 /* BattleCity.entitlements */,
 				C37A954D26E3D799008A2BF8 /* Constants.swift */,
+				C37A955026E3DFD6008A2BF8 /* Levels.swift */,
 			);
 			path = BattleCity;
 			sourceTree = "<group>";
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C37A955126E3DFD6008A2BF8 /* Levels.swift in Sources */,
 				C37A954E26E3D799008A2BF8 /* Constants.swift in Sources */,
 				C37A954626E3AD42008A2BF8 /* AnotherScene.swift in Sources */,
 				C37A953626E3A90D008A2BF8 /* ViewController.swift in Sources */,
