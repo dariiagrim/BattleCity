@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C378C9C726E6A6A1007CA0F1 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C378C9C626E6A6A0007CA0F1 /* Enemy.swift */; };
+		C31FC98326E7E4E900077903 /* WallNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31FC98226E7E4E900077903 /* WallNode.swift */; };
+		C31FC98626E7FF2D00077903 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31FC98526E7FF2D00077903 /* Enemy.swift */; };
 		C37A952E26E3A90D008A2BF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A952D26E3A90D008A2BF8 /* AppDelegate.swift */; };
 		C37A953426E3A90D008A2BF8 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A953326E3A90D008A2BF8 /* GameScene.swift */; };
 		C37A953626E3A90D008A2BF8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A953526E3A90D008A2BF8 /* ViewController.swift */; };
@@ -23,7 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C378C9C626E6A6A0007CA0F1 /* Enemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
+		C31FC98226E7E4E900077903 /* WallNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallNode.swift; sourceTree = "<group>"; };
+		C31FC98526E7FF2D00077903 /* Enemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		C37A952A26E3A90D008A2BF8 /* BattleCity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BattleCity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C37A952D26E3A90D008A2BF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C37A953326E3A90D008A2BF8 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -85,7 +87,8 @@
 				C37A955926E4BE99008A2BF8 /* Player.swift */,
 				C37A955D26E4DDED008A2BF8 /* Base.swift */,
 				C37A956426E4E08A008A2BF8 /* GameZone.swift */,
-				C378C9C626E6A6A0007CA0F1 /* Enemy.swift */,
+				C31FC98226E7E4E900077903 /* WallNode.swift */,
+				C31FC98526E7FF2D00077903 /* Enemy.swift */,
 			);
 			path = BattleCity;
 			sourceTree = "<group>";
@@ -160,13 +163,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C37A955126E3DFD6008A2BF8 /* Levels.swift in Sources */,
+				C31FC98326E7E4E900077903 /* WallNode.swift in Sources */,
 				C37A954E26E3D799008A2BF8 /* Constants.swift in Sources */,
 				C37A954626E3AD42008A2BF8 /* AnotherScene.swift in Sources */,
-				C378C9C726E6A6A1007CA0F1 /* Enemy.swift in Sources */,
 				C37A953626E3A90D008A2BF8 /* ViewController.swift in Sources */,
 				C37A953426E3A90D008A2BF8 /* GameScene.swift in Sources */,
 				C37A956526E4E08A008A2BF8 /* GameZone.swift in Sources */,
 				C37A952E26E3A90D008A2BF8 /* AppDelegate.swift in Sources */,
+				C31FC98626E7FF2D00077903 /* Enemy.swift in Sources */,
 				C37A955E26E4DDED008A2BF8 /* Base.swift in Sources */,
 				C37A955A26E4BE99008A2BF8 /* Player.swift in Sources */,
 				C37A955726E4B64A008A2BF8 /* Bullet.swift in Sources */,
