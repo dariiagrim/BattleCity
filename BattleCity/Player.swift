@@ -25,22 +25,23 @@ class Player: SKSpriteNode {
     func playerMovement(keyCode: uint16, gameZoneSize: CGSize, level: [[Int]]) {
         removeAllActions()
         
-        var x = Int(((position.x - 17.5) / 35).rounded(.toNearestOrEven))
-        var y = Int(((position.y - 17.5) / 35).rounded(.toNearestOrEven))
+        var x = gameZoneToArrayPosition(coordinate: position.x)
+        var y = gameZoneToArrayPosition(coordinate: position.y)
         
         
         var possibleOptions = [Rotation]()
+        let levelSize = level.count
         
-        if x != 0 && level[level.count - y - 1][x - 1] == 0 {
+        if x != 0 && level[levelSize - y - 1][x - 1] == 0 {
             possibleOptions.append(.left)
         }
-        if x != level[0].count - 1 && level[level.count - y - 1][x + 1] == 0 {
+        if x != level[0].count - 1 && level[levelSize - y - 1][x + 1] == 0 {
             possibleOptions.append(.right)
         }
-        if y != 0 && level[level.count - y][x] == 0 {
+        if y != 0 && level[levelSize - y][x] == 0 {
             possibleOptions.append(.down)
         }
-        if y != level.count - 1 && level[level.count - y - 2][x] == 0 {
+        if y != levelSize - 1 && level[levelSize - y - 2][x] == 0 {
             possibleOptions.append(.up)
         }
         
@@ -75,12 +76,9 @@ class Player: SKSpriteNode {
         }
         
         run(
-            SKAction.move(to: CGPoint(x: CGFloat(x) * 35 + 17.5, y: CGFloat(y) * 35 + 17.5), duration: 0.2)
+            SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.2)
         )
         
     }
 }
 
-enum Rotation {
-    case up, down, left, right
-}

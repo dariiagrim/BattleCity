@@ -75,6 +75,20 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             gameZone.addChild(bullet)
             bullet.name = "bulletPlayer"
             bullet.run(bulletMoveAction)
+        case Constants.p:
+            gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
+            if let enemy = node as? Enemy {
+                enemy.pauseGame()
+            }
+        }
+        case Constants.o:
+            gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
+                if let enemy = node as? Enemy {
+                    enemy.unpauseGame()
+                    enemy.move(level: level1)
+                    enemy.shoot(gameZone: self.gameZone)
+                }
+            }
         default:
             break
         }
@@ -83,8 +97,8 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
     
     func didBegin(_ contact: SKPhysicsContact) {
         if (contact.bodyA.node?.name == "bulletPlayer" && contact.bodyB.node?.name == "wall") {
-            let x = Int(((contact.bodyB.node!.position.x - 17.5) / 35).rounded(.toNearestOrEven))
-            let y = Int(((contact.bodyB.node!.position.y - 17.5) / 35).rounded(.toNearestOrEven))
+            let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
+            let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
             level1[level1.count - y - 1][x] = 0
             points += 10
             pointsTextNumber.text = "\(points)"
@@ -93,8 +107,8 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (contact.bodyA.node?.name == "wall" && contact.bodyB.node?.name == "bulletPlayer") {
-            let x = Int(((contact.bodyA.node!.position.x - 17.5) / 35).rounded(.toNearestOrEven))
-            let y = Int(((contact.bodyA.node!.position.y - 17.5) / 35).rounded(.toNearestOrEven))
+            let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
+            let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
             level1[level1.count - y - 1][x] = 0
             points += 10
             pointsTextNumber.text = "\(points)"
@@ -102,16 +116,16 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.node?.removeFromParent()
         }
         if (contact.bodyA.node?.name == "bulletEnemy" && contact.bodyB.node?.name == "wall") {
-            let x = Int(((contact.bodyB.node!.position.x - 17.5) / 35).rounded(.toNearestOrEven))
-            let y = Int(((contact.bodyB.node!.position.y - 17.5) / 35).rounded(.toNearestOrEven))
+            let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
+            let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
             level1[level1.count - y - 1][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
         }
         
         if (contact.bodyA.node?.name == "wall" && contact.bodyB.node?.name == "bulletEnemy") {
-            let x = Int(((contact.bodyA.node!.position.x - 17.5) / 35).rounded(.toNearestOrEven))
-            let y = Int(((contact.bodyA.node!.position.y - 17.5) / 35).rounded(.toNearestOrEven))
+            let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
+            let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
             level1[level1.count - y - 1][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()

@@ -21,6 +21,7 @@
 		C37A955A26E4BE99008A2BF8 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A955926E4BE99008A2BF8 /* Player.swift */; };
 		C37A955E26E4DDED008A2BF8 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A955D26E4DDED008A2BF8 /* Base.swift */; };
 		C37A956526E4E08A008A2BF8 /* GameZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37A956426E4E08A008A2BF8 /* GameZone.swift */; };
+		C37F331126EE9937009BC372 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37F331026EE9937009BC372 /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		C37A955926E4BE99008A2BF8 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		C37A955D26E4DDED008A2BF8 /* Base.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
 		C37A956426E4E08A008A2BF8 /* GameZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameZone.swift; sourceTree = "<group>"; };
+		C37F331026EE9937009BC372 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 				C37A956426E4E08A008A2BF8 /* GameZone.swift */,
 				C31FC98226E7E4E900077903 /* WallNode.swift */,
 				C31FC98526E7FF2D00077903 /* Enemy.swift */,
+				C37F331026EE9937009BC372 /* Utils.swift */,
 			);
 			path = BattleCity;
 			sourceTree = "<group>";
@@ -167,6 +170,7 @@
 				C37A954E26E3D799008A2BF8 /* Constants.swift in Sources */,
 				C37A954626E3AD42008A2BF8 /* AnotherScene.swift in Sources */,
 				C37A953626E3A90D008A2BF8 /* ViewController.swift in Sources */,
+				C37F331126EE9937009BC372 /* Utils.swift in Sources */,
 				C37A953426E3A90D008A2BF8 /* GameScene.swift in Sources */,
 				C37A956526E4E08A008A2BF8 /* GameZone.swift in Sources */,
 				C37A952E26E3A90D008A2BF8 /* AppDelegate.swift in Sources */,

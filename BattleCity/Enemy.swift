@@ -11,6 +11,7 @@ import SpriteKit
 class Enemy: SKSpriteNode {
     
     var rotation: Rotation = .down
+    var pause = false
     
     convenience init(imageName: String) {
         self.init(imageNamed: imageName)
@@ -25,22 +26,25 @@ class Enemy: SKSpriteNode {
     }
     
     func move(level: [[Int]]) {
+        
+        guard !pause else { return }
     
-        var x = Int(((position.x - 17.5) / 35).rounded(.toNearestOrEven))
-        var y = Int(((position.y - 17.5) / 35).rounded(.toNearestOrEven))
+        var x = gameZoneToArrayPosition(coordinate: position.x)
+        var y = gameZoneToArrayPosition(coordinate: position.y)
         
         var possibleOptions = [Rotation]()
+        let levelSize = level.count
         
-        if x != 0 && level[level.count - y - 1][x - 1] == 0 {
+        if x != 0 && level[levelSize - y - 1][x - 1] == 0 {
             possibleOptions.append(.left)
         }
-        if x != level[0].count - 1 && level[level.count - y - 1][x + 1] == 0 {
+        if x != level[0].count - 1 && level[levelSize - y - 1][x + 1] == 0 {
             possibleOptions.append(.right)
         }
-        if y != 0 && level[level.count - y][x] == 0 {
+        if y != 0 && level[levelSize - y][x] == 0 {
             possibleOptions.append(.down)
         }
-        if y != level.count - 1 && level[level.count - y - 2][x] == 0 {
+        if y != level.count - 1 && level[levelSize - y - 2][x] == 0 {
             possibleOptions.append(.up)
         }
         
@@ -68,7 +72,7 @@ class Enemy: SKSpriteNode {
         }
         
         run(SKAction.sequence([
-            SKAction.move(to: CGPoint(x: CGFloat(x) * 35 + 17.5, y: CGFloat(y) * 35 + 17.5), duration: 0.5),
+            SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.5),
             SKAction.run { [weak self] in
                 self?.move(level: level)
             }
@@ -76,6 +80,7 @@ class Enemy: SKSpriteNode {
     }
     
     func shoot(gameZone: GameZone) {
+        guard !pause else { return }
         run(SKAction.sequence([SKAction.wait(forDuration: 2), SKAction.run { [self] in
             let bullet = Bullet(radius: 5)
             let bulletMoveAction = bullet.shoot(direction: self.rotation, position: self.position, gameZoneSize: gameZone.size)
@@ -85,6 +90,14 @@ class Enemy: SKSpriteNode {
         }, SKAction.run { [weak self] in
                 self?.shoot(gameZone: gameZone)
         }]))
+    }
+    
+    func pauseGame() {
+        pause = true
+    }
+    
+    func unpauseGame() {
+        pause = false
     }
 }
 

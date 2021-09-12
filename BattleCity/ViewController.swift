@@ -24,7 +24,7 @@ class ViewController: NSViewController {
             view.ignoresSiblingOrder = true
             
             view.showsFPS = true
-            view.showsPhysics = true
+//            view.showsPhysics = true
             view.showsNodeCount = true
         }
     }
