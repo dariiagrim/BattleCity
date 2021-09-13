@@ -32,6 +32,9 @@ class Enemy: SKSpriteNode {
         var x = gameZoneToArrayPosition(coordinate: position.x)
         var y = gameZoneToArrayPosition(coordinate: position.y)
         
+        let prevX = x
+        let prevY = y
+        
         var possibleOptions = [Rotation]()
         let levelSize = level.count
         
@@ -77,6 +80,13 @@ class Enemy: SKSpriteNode {
                 self?.move(level: level)
             }
         ]))
+        level1[levelSize - prevY - 1][prevX] = 0
+        level1[levelSize - y - 1][x] = 3
+        
+        for row in level1 {
+            print(row)
+        }
+        print("***")
     }
     
     func shoot(gameZone: GameZone) {

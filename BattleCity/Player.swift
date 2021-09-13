@@ -15,6 +15,7 @@ class Player: SKSpriteNode {
         self.init(imageNamed: imageName)
         self.size = CGSize(width: 35, height: 35)
         self.position = CGPoint(x: 17.5, y: 17.5)
+        level1[level1.count - 1][0] = 2
         self.name = "player"
         self.physicsBody = SKPhysicsBody(rectangleOf: self.size)
         self.physicsBody?.affectedByGravity = false
@@ -28,6 +29,8 @@ class Player: SKSpriteNode {
         var x = gameZoneToArrayPosition(coordinate: position.x)
         var y = gameZoneToArrayPosition(coordinate: position.y)
         
+        let prevX = x
+        let prevY = y
         
         var possibleOptions = [Rotation]()
         let levelSize = level.count
@@ -76,9 +79,11 @@ class Player: SKSpriteNode {
         }
         
         run(
-            SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.2)
+            SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.01)
         )
         
+        level1[levelSize - prevY - 1][prevX] = 0
+        level1[levelSize - y - 1][x] = 2
     }
 }
 
