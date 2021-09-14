@@ -43,6 +43,8 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         player = Player(imageName: "player", gameZoneSize: gameZone.size)
         base = Base(imageName: "base", gameZoneSize: gameZone.size)
 
+        getRandomMaze()
+        
         for (indexY, val)  in level1.reversed().enumerated() {
             for (indexX, wall) in val.enumerated() {
                 if wall == 1 {
@@ -52,7 +54,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-    
+            
         gameZone.addChild(player)
         gameZone.addChild(base)
                 
@@ -80,6 +82,10 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             if let enemy = node as? Enemy {
                 enemy.pauseGame()
             }
+                for row in level1 {
+                    print(row)
+                }
+                print("***")
         }
         case Constants.o:
             gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
@@ -89,6 +95,8 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
                     enemy.shoot(gameZone: self.gameZone)
                 }
             }
+        case Constants.e:
+            newEnemy = true
         default:
             break
         }
@@ -131,6 +139,9 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.node?.removeFromParent()
         }
         if (contact.bodyA.node?.name == "bulletPlayer" && contact.bodyB.node?.name == "enemy") {
+            let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
+            let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
+            level1[level1.count - y - 1][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             points += 100
@@ -139,6 +150,9 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (contact.bodyA.node?.name == "enemy" && contact.bodyB.node?.name == "bulletPlayer") {
+            let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
+            let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
+            level1[level1.count - y - 1][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             points += 100
@@ -180,6 +194,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
       
+        
         if newEnemy {
             newEnemy = false
             let enemy = Enemy(imageName: "enemy")

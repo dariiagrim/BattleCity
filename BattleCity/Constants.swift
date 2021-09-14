@@ -15,6 +15,7 @@ struct Constants {
     static let space: UInt16 = 0x31
     static let p: UInt16 = 0x23
     static let o: UInt16 = 0x1F
+    static let e: UInt16 = 0x0E
     static let playerFlag: UInt32 = 1 << 0
     static let bulletFlag: UInt32 = 1 << 1
     static let wallFlag: UInt32 = 1 << 2

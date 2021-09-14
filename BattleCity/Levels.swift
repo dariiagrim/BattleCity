@@ -31,3 +31,18 @@ var level1 = [
     [0,0,0,0,0,0,0,0,0,1,1,5,5,1,1,0,0,0,0,0,0,0,0,0],
 ]
 
+func getRandomMaze() {
+    let choices = [1, 0, 0, 0, 0]
+    for i in 1..<20 {
+        for j in 0..<24 {
+            level1[i][j] = choices.randomElement()!
+        }
+    }
+    
+    level1[level1.count - 1][0] = 0
+    level1[level1.count - 1][11] = 5
+    level1[level1.count - 1][12] = 5
+    level1[level1.count - 2][11] = 5
+    level1[level1.count - 2][12] = 5
+}
+

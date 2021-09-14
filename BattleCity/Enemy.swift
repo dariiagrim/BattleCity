@@ -73,20 +73,14 @@ class Enemy: SKSpriteNode {
         default:
             move(level: level)
         }
-        
+        level1[levelSize - prevY - 1][prevX] = 0
+        level1[levelSize - y - 1][x] = 3
         run(SKAction.sequence([
             SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.5),
             SKAction.run { [weak self] in
                 self?.move(level: level)
             }
         ]))
-        level1[levelSize - prevY - 1][prevX] = 0
-        level1[levelSize - y - 1][x] = 3
-        
-        for row in level1 {
-            print(row)
-        }
-        print("***")
     }
     
     func shoot(gameZone: GameZone) {
