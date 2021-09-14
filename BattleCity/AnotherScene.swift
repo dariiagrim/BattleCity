@@ -85,19 +85,24 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             let alg = algs.removeFirst()
             gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
                 if let enemy = node as? Enemy {
-                enemy.pauseGame()
-                self.run(SKAction.sequence([SKAction.wait(forDuration: 0.5), SKAction.run {
-                    switch alg {
-                    case .dfs:
-                        DFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
-                    case .bfs:
-                        BFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
-                    case .ucs:
-                        print("ucs")
-                    }
-                }]))
-            }
-                
+                    enemy.pauseGame()
+                    self.run(SKAction.sequence([SKAction.wait(forDuration: 0.5), SKAction.run {
+                        let timeBefore = Date()
+                        switch alg {
+                        case .dfs:
+                            DFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
+                            print("DFS")
+                        case .bfs:
+                            BFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
+                            print("BFS")
+                        case .ucs:
+                            UCS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
+                            print("UCS")
+                        }
+                        let timeAfter = Date()
+                        print(timeAfter.timeIntervalSince(timeBefore))
+                    }]))
+                }
         }
         case Constants.o:
             gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in

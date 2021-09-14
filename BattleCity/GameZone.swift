@@ -16,7 +16,6 @@ class GameZone: SKSpriteNode {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(x: 0, y: 0, width: zoneSize.width, height: zoneSize.height))
         self.physicsBody?.affectedByGravity = false
         self.name = "gameZone"
-        print(self.frame)
     }
     
 
