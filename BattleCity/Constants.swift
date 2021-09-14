@@ -13,7 +13,7 @@ struct Constants {
     static let rightArrow: UInt16 = 0x7C
     static let leftArrow: UInt16 = 0x7B
     static let space: UInt16 = 0x31
-    static let p: UInt16 = 0x23
+    static let z: UInt16 = 0x06
     static let o: UInt16 = 0x1F
     static let e: UInt16 = 0x0E
     static let playerFlag: UInt32 = 1 << 0

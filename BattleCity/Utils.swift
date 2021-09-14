@@ -20,3 +20,4 @@ func arrayToGameZonePosition(coordinate: Int) -> CGFloat {
 func gameZoneToArrayPosition(coordinate: CGFloat) -> Int {
     return Int(((coordinate - 17.5) / 35).rounded(.toNearestOrEven))
 }
+

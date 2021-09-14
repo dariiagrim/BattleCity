@@ -21,6 +21,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
     private var points = 0
     private var pointsText: SKLabelNode!
     private var pointsTextNumber: SKLabelNode!
+    private var algs: [AlgEnum] = [.dfs, .bfs, .ucs]
     
     
     override func didMove(to view: SKView) {
@@ -77,15 +78,26 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             gameZone.addChild(bullet)
             bullet.name = "bulletPlayer"
             bullet.run(bulletMoveAction)
-        case Constants.p:
-            gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
-            if let enemy = node as? Enemy {
-                enemy.pauseGame()
+        case Constants.z:
+            if algs.count == 0 {
+                algs = [.dfs, .bfs, .ucs]
             }
-                for row in level1 {
-                    print(row)
-                }
-                print("***")
+            let alg = algs.removeFirst()
+            gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
+                if let enemy = node as? Enemy {
+                enemy.pauseGame()
+                self.run(SKAction.sequence([SKAction.wait(forDuration: 0.5), SKAction.run {
+                    switch alg {
+                    case .dfs:
+                        DFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
+                    case .bfs:
+                        BFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
+                    case .ucs:
+                        print("ucs")
+                    }
+                }]))
+            }
+                
         }
         case Constants.o:
             gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in

@@ -12,7 +12,16 @@ class Enemy: SKSpriteNode {
     
     var rotation: Rotation = .down
     var pause = false
-    
+    var arrayX: Int {
+        get {
+            return gameZoneToArrayPosition(coordinate: position.x)
+        }
+    }
+    var arrayY: Int {
+        get {
+            return gameZoneToArrayPosition(coordinate: position.y)
+        }
+    }
     convenience init(imageName: String) {
         self.init(imageNamed: imageName)
         self.size = CGSize(width: 35, height: 35)
@@ -73,11 +82,11 @@ class Enemy: SKSpriteNode {
         default:
             move(level: level)
         }
-        level1[levelSize - prevY - 1][prevX] = 0
-        level1[levelSize - y - 1][x] = 3
         run(SKAction.sequence([
             SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.5),
             SKAction.run { [weak self] in
+                level1[levelSize - prevY - 1][prevX] = 0
+                level1[levelSize - y - 1][x] = 3
                 self?.move(level: level)
             }
         ]))
