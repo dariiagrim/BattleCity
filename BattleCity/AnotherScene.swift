@@ -46,7 +46,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
 
         getRandomMaze()
         
-        for (indexY, val)  in level1.reversed().enumerated() {
+        for (indexY, val)  in level1.enumerated() {
             for (indexX, wall) in val.enumerated() {
                 if wall == 1 {
                     let wallNode = WallNode(imageName: "wall", indexX: indexX, indexY: indexY)
@@ -64,13 +64,12 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         addChild(lifesLeftTextNumber)
         addChild(pointsText)
         addChild(pointsTextNumber)
-        
-    }
+        player.playerMovement(movementArr: [AStarPoint](), gameZoneSize: gameZone.size)
+        }
     
 
     
     override func keyDown(with event: NSEvent) {
-        player.playerMovement(keyCode: event.keyCode, gameZoneSize: gameZone.size, level: level1)
         switch event.keyCode {
         case Constants.space:
             let bullet = Bullet(radius: 5)
@@ -78,32 +77,6 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             gameZone.addChild(bullet)
             bullet.name = "bulletPlayer"
             bullet.run(bulletMoveAction)
-        case Constants.z:
-            if algs.count == 0 {
-                algs = [.dfs, .bfs, .ucs]
-            }
-            let alg = algs.removeFirst()
-            gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
-                if let enemy = node as? Enemy {
-                    enemy.pauseGame()
-                    self.run(SKAction.sequence([SKAction.wait(forDuration: 0.5), SKAction.run {
-                        let timeBefore = Date()
-                        switch alg {
-                        case .dfs:
-                            DFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
-                            print("DFS")
-                        case .bfs:
-                            BFS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
-                            print("BFS")
-                        case .ucs:
-                            UCS(startX: enemy.arrayX, startY: enemy.arrayY, gameZone: self.gameZone)
-                            print("UCS")
-                        }
-                        let timeAfter = Date()
-                        print(timeAfter.timeIntervalSince(timeBefore))
-                    }]))
-                }
-        }
         case Constants.o:
             gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
                 if let enemy = node as? Enemy {
@@ -124,7 +97,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "bulletPlayer" && contact.bodyB.node?.name == "wall") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             points += 10
             pointsTextNumber.text = "\(points)"
             contact.bodyA.node?.removeFromParent()
@@ -134,7 +107,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "wall" && contact.bodyB.node?.name == "bulletPlayer") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             points += 10
             pointsTextNumber.text = "\(points)"
             contact.bodyA.node?.removeFromParent()
@@ -143,7 +116,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "bulletEnemy" && contact.bodyB.node?.name == "wall") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
         }
@@ -151,14 +124,14 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "wall" && contact.bodyB.node?.name == "bulletEnemy") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
         }
         if (contact.bodyA.node?.name == "bulletPlayer" && contact.bodyB.node?.name == "enemy") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             points += 100
@@ -169,7 +142,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "enemy" && contact.bodyB.node?.name == "bulletPlayer") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             points += 100
@@ -220,6 +193,8 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             enemy.shoot(gameZone: gameZone)
         }
         
+      
+        
         if minusLife {
             minusLife = false
             lifes -= 1
@@ -229,7 +204,6 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             lifesLeftTextNumber.text = "\(lifes)"
             player = Player(imageName: "player", gameZoneSize: gameZone.size)
             gameZone.addChild(player)
-            
         }
     }
     

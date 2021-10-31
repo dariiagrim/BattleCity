@@ -23,67 +23,43 @@ class Player: SKSpriteNode {
         self.physicsBody?.collisionBitMask = Constants.wallFlag | Constants.enemyFlag | Constants.bulletFlag
     }
     
-    func playerMovement(keyCode: uint16, gameZoneSize: CGSize, level: [[Int]]) {
-        removeAllActions()
-        
-        var x = gameZoneToArrayPosition(coordinate: position.x)
-        var y = gameZoneToArrayPosition(coordinate: position.y)
-        
-        let prevX = x
-        let prevY = y
-        
-        var possibleOptions = [Rotation]()
-        let levelSize = level.count
-        
-        if x != 0 && level[levelSize - y - 1][x - 1] == 0 {
-            possibleOptions.append(.left)
-        }
-        if x != level[0].count - 1 && level[levelSize - y - 1][x + 1] == 0 {
-            possibleOptions.append(.right)
-        }
-        if y != 0 && level[levelSize - y][x] == 0 {
-            possibleOptions.append(.down)
-        }
-        if y != levelSize - 1 && level[levelSize - y - 2][x] == 0 {
-            possibleOptions.append(.up)
-        }
-        
-        switch keyCode {
-        case Constants.leftArrow:
-            self.zRotation =  .pi / 2
-            self.direction = .left
-            if possibleOptions.contains(.left) {
-                x -= 1
+    func playerMovement(movementArr: [AStarPoint], gameZoneSize: CGSize) {
+            removeAllActions()
+            if movementArr.count > 0 {
+                var movementArrCopy = movementArr
+                let move = movementArrCopy.popLast()
+                let x = move!.x
+                let y = move!.y
+                self.zRotation = rotationToAngle(rotation: move!.direction)
+                run(
+                    SKAction.sequence([SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.2), SKAction.run {
+                        self.playerMovement(movementArr: movementArrCopy, gameZoneSize: gameZoneSize)
+                    }]))
+            } else {
+
+                let x = gameZoneToArrayPosition(coordinate: self.position.x)
+                let y = gameZoneToArrayPosition(coordinate: self.position.y)
+                var possibleToGoPoints = [(x: Int, y: Int)]()
+                for (indexY, val)  in level1.enumerated() {
+                    for (indexX, wall) in val.enumerated() {
+                        if wall == 0 {
+                            possibleToGoPoints.append((x: indexX, y: indexY))
+                        }
+                    }
+                }
+                let toGoPoint = possibleToGoPoints.randomElement()
+                let path: [AStarPoint]
+                if let toGoPoint = toGoPoint {
+                    level1[toGoPoint.y][toGoPoint.x] = 33
+                    path = AStar(start: AStarPoint(x: x, y: y, from: nil, endX: toGoPoint.x, endY: toGoPoint.y, direction: .up), end: AStarPoint(x: toGoPoint.x, y: toGoPoint.y, from: nil, endX: toGoPoint.x, endY: toGoPoint.y, direction: .up))
+                    level1[toGoPoint.y][toGoPoint.x] = 0
+                } else {
+                    path = AStar(start:  AStarPoint(x: x, y: y, from: nil, endX: 0, endY: 0, direction: .up), end: nil)
+                }
+                playerMovement(movementArr: path, gameZoneSize: gameZoneSize)
             }
-            
-        case Constants.rightArrow:
-            self.zRotation =  .pi * 3 / 2
-            self.direction = .right
-            if possibleOptions.contains(.right) {
-                x += 1
-            }
-        case Constants.upArrow:
-            self.zRotation = 0
-            self.direction = .up
-            if possibleOptions.contains(.up) {
-                y += 1
-            }
-        case Constants.downArrow:
-            self.direction = .down
-            self.zRotation =  .pi
-            if possibleOptions.contains(.down) {
-                y -= 1
-            }
-        default:
-            break
+    
         }
-        
-        run(
-            SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.01)
-        )
-        
-        level1[levelSize - prevY - 1][prevX] = 0
-        level1[levelSize - y - 1][x] = 2
-    }
+   
 }
 

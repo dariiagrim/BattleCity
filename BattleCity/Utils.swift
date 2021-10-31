@@ -21,3 +21,18 @@ func gameZoneToArrayPosition(coordinate: CGFloat) -> Int {
     return Int(((coordinate - 17.5) / 35).rounded(.toNearestOrEven))
 }
 
+
+func rotationToAngle(rotation: Rotation) -> CGFloat{
+    let angle: CGFloat
+    switch rotation {
+    case .up:
+        angle = 0
+    case .down:
+        angle = .pi
+    case .left:
+        angle = .pi / 2
+    case .right:
+        angle = .pi * 3 / 2
+    }
+    return angle
+}
