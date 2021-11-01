@@ -27,6 +27,7 @@ class Enemy: SKSpriteNode {
         self.init(imageNamed: imageName)
         self.size = CGSize(width: 35, height: 35)
         self.position = CGPoint(x: CGFloat(Int.random(in: 0..<24)) * 35 + 17.5, y: 682.5)
+        level1[arrayY][arrayX] = 3
         self.name = "enemy"
         self.zRotation = .pi
         self.physicsBody = SKPhysicsBody(rectangleOf: self.size)
@@ -59,8 +60,7 @@ class Enemy: SKSpriteNode {
                     self.move(path: pathCopy, gameZoneSize: gameZoneSize, gameZone: gameZone)
                 }]))
         } else {
-            print("wait")
-            run(SKAction.sequence([SKAction.wait(forDuration: 2), SKAction.run({
+            run(SKAction.sequence([SKAction.wait(forDuration: 0.5), SKAction.run({
                 self.move(path: pathCopy, gameZoneSize: gameZoneSize, gameZone: gameZone)
             })]))
         }

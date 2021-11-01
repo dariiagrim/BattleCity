@@ -12,12 +12,21 @@ class Player: SKSpriteNode {
     var direction: Rotation = .up
     var prevXPosition = 0
     var prevYPosition = 0
+    var arrayX: Int {
+        get {
+            return gameZoneToArrayPosition(coordinate: position.x)
+        }
+    }
+    var arrayY: Int {
+        get {
+            return gameZoneToArrayPosition(coordinate: position.y)
+        }
+    }
     convenience init(imageName: String, gameZoneSize: CGSize) {
         self.init(imageNamed: imageName)
         self.size = CGSize(width: 35, height: 35)
         self.position = CGPoint(x: 17.5, y: 17.5)
         self.name = "player"
-        level1[0][0]  = 2
         self.physicsBody = SKPhysicsBody(rectangleOf: self.size)
         self.physicsBody?.affectedByGravity = false
         self.physicsBody?.categoryBitMask = Constants.playerFlag
@@ -43,8 +52,8 @@ class Player: SKSpriteNode {
                         self.playerMovement(movementArr: movementArrCopy, gameZoneSize: gameZoneSize, gameZone: gameZone)
                     }]))
             } else {
-                let x = gameZoneToArrayPosition(coordinate: self.position.x)
-                let y = gameZoneToArrayPosition(coordinate: self.position.y)
+                let x = self.arrayX
+                let y = self.arrayY
                 var possibleToGoPoints = [(x: Int, y: Int)]()
                 for (indexY, val)  in level1.enumerated() {
                     for (indexX, wall) in val.enumerated() {

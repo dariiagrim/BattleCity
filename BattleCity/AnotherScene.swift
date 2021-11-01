@@ -164,19 +164,23 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (contact.bodyA.node?.name == "bulletEnemy" && contact.bodyB.node?.name == "player") {
-            let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
-            let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
-            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
+            if level1[player.arrayY][player.arrayX] == 2 {
+                level1[player.arrayY][player.arrayX] = 0
+            } else if level1[player.prevYPosition][player.prevXPosition] == 2 {
+                level1[player.prevYPosition][player.prevXPosition] = 0
+            }
             minusLife = true
         }
         if (contact.bodyA.node?.name == "player" && contact.bodyB.node?.name == "bulletEnemy") {
-            let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
-            let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
-            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
+            if level1[player.arrayY][player.arrayX] == 2 {
+                level1[player.arrayY][player.arrayX] = 0
+            } else if level1[player.prevYPosition][player.prevXPosition] == 2 {
+                level1[player.prevYPosition][player.prevXPosition] = 0
+            }
             minusLife = true
         }
     }

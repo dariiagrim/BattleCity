@@ -32,7 +32,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "173"
             endingLineNumber = "173"
-            landmarkName = "DFS(startX:startY:)"
+            landmarkName = "BFS(startX:startY:)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "175"
             endingLineNumber = "175"
-            landmarkName = "DFS(startX:startY:)"
+            landmarkName = "BFS(startX:startY:)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -112,7 +112,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "147"
             endingLineNumber = "147"
-            landmarkName = "DFS(startX:startY:)"
+            landmarkName = "BFS(startX:startY:)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -128,7 +128,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "178"
             endingLineNumber = "178"
-            landmarkName = "DFS(startX:startY:)"
+            landmarkName = "BFS(startX:startY:)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -144,7 +144,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "196"
             endingLineNumber = "196"
-            landmarkName = "DFS(startX:startY:)"
+            landmarkName = "BFS(startX:startY:)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -160,7 +160,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "179"
             endingLineNumber = "179"
-            landmarkName = "DFS(startX:startY:)"
+            landmarkName = "BFS(startX:startY:)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
