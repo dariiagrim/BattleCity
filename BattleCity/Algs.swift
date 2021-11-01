@@ -12,11 +12,13 @@ class Point {
     let x: Int
     let y: Int
     let from: Point?
+    let direction: Rotation
     
-    init(x: Int, y: Int, from: Point?) {
+    init(x: Int, y: Int, from: Point?, direction: Rotation) {
         self.x = x
         self.y = y
         self.from = from
+        self.direction = direction
     }
 }
 
@@ -141,79 +143,30 @@ func AStar(start: AStarPoint, end: AStarPoint?) -> [AStarPoint]{
     
 }
 
-func DFS(startX: Int, startY: Int, gameZone: GameZone) {
+func BFS(startX: Int, startY: Int) -> [Point]{
     var visitControlArray = Array(repeating: Array(repeating: 0, count: 24), count: 20)
     var stack = [Point]()
-    
-    stack.append(Point(x: startX, y: startY, from: nil))
-    var finishPoint: Point? = nil
-    
-    while !stack.isEmpty {
-        let v = stack.removeLast()
-        if visitControlArray[level1.count - v.y - 1][v.x] == 0 {
-            visitControlArray[level1.count - v.y - 1][v.x] = 1
-            let (possibleOptions, finish) = possibleToGoOptionsFromPosition(x: v.x, y: v.y, finishValue: 2)
-            
-            if possibleOptions.contains(.up) {
-                stack.append(Point(x: v.x, y: v.y + 1, from: v))
-            }
-            if possibleOptions.contains(.right) {
-                stack.append(Point(x: v.x + 1, y: v.y, from: v))
-            }
-            if possibleOptions.contains(.left) {
-                stack.append(Point(x: v.x - 1, y: v.y, from: v))
-            }
-            if possibleOptions.contains(.down) {
-                stack.append(Point(x: v.x, y: v.y - 1, from: v))
-            }
-            if finish {
-                finishPoint = stack.removeLast()
-                break
-            }
-        }
-    }
-    
-
-    var pathCounter = 0
-    if finishPoint != nil {
-        var point = finishPoint
-        while point != nil {
-            let pathMarker = SKShapeNode(rectOf: CGSize(width: 18, height: 18))
-            pathMarker.position = CGPoint(x: arrayToGameZonePosition(coordinate: point!.x), y: arrayToGameZonePosition(coordinate: point!.y))
-            pathMarker.fillColor = .red
-            gameZone.addChild(pathMarker)
-            point = point!.from
-            pathCounter += 1
-        }
-    }
-    print(pathCounter)
-    
-}
-
-func BFS(startX: Int, startY: Int, gameZone: GameZone) {
-    var visitControlArray = Array(repeating: Array(repeating: 0, count: 24), count: 20)
-    var stack = [Point]()
-    
-    stack.append(Point(x: startX, y: startY, from: nil))
+    let level1Copy = level1
+    stack.append(Point(x: startX, y: startY, from: nil, direction: .up))
     var finishPoint: Point? = nil
     
     while !stack.isEmpty {
         let v = stack.removeFirst()
-        if visitControlArray[level1.count - v.y - 1][v.x] == 0 {
-            visitControlArray[level1.count - v.y - 1][v.x] = 1
-            let (possibleOptions, finish) = possibleToGoOptionsFromPosition(x: v.x, y: v.y, finishValue: 2)
+        if visitControlArray[v.y][v.x] == 0 {
+            visitControlArray[v.y][v.x] = 1
+            let (possibleOptions, finish) = possibleToGoOptionsFromPositionWithLevelCopy(x: v.x, y: v.y, finishValue: 2, levelCopy: level1Copy)
             
             if possibleOptions.contains(.up) {
-                stack.append(Point(x: v.x, y: v.y + 1, from: v))
+                stack.append(Point(x: v.x, y: v.y + 1, from: v, direction: .up))
             }
             if possibleOptions.contains(.right) {
-                stack.append(Point(x: v.x + 1, y: v.y, from: v))
+                stack.append(Point(x: v.x + 1, y: v.y, from: v, direction: .right))
             }
             if possibleOptions.contains(.left) {
-                stack.append(Point(x: v.x - 1, y: v.y, from: v))
+                stack.append(Point(x: v.x - 1, y: v.y, from: v, direction: .left))
             }
             if possibleOptions.contains(.down) {
-                stack.append(Point(x: v.x, y: v.y - 1, from: v))
+                stack.append(Point(x: v.x, y: v.y - 1, from: v, direction: .down))
             }
             if finish {
                 finishPoint = stack.removeLast()
@@ -222,85 +175,138 @@ func BFS(startX: Int, startY: Int, gameZone: GameZone) {
         }
     }
     
-    
-    var pathCounter = 0
-    
-    if finishPoint != nil {
+    var path = [Point]()
+    if let finishPoint = finishPoint {
         var point = finishPoint
-        while point != nil {
-            let pathMarker = SKShapeNode(rectOf: CGSize(width: 12, height: 12))
-            pathMarker.position = CGPoint(x: arrayToGameZonePosition(coordinate: point!.x), y: arrayToGameZonePosition(coordinate: point!.y))
-            pathMarker.fillColor = .blue
-            pathMarker.name = "pathMarker"
-            gameZone.addChild(pathMarker)
-            point = point!.from
-            pathCounter += 1
+        while point.from != nil {
+            point = point.from!
+            path.append(point)
+        }
+        path.popLast()
+    }
+    var shortPath = [Point]()
+    var counter = 0
+    for node in path.reversed() {
+        shortPath.append(node)
+        counter += 1
+        if counter > 10 {
+            break
         }
     }
-    
-    print(pathCounter)
-    
+    return shortPath
 }
 
-
-
-func UCS(startX: Int, startY: Int, gameZone: GameZone) {
-    var visitControlArray = Array(repeating: Array(repeating: 0, count: 24), count: 20)
-    var stack = [PointWithPriority]()
-    
-    var distanceCounter = 0
-    stack.append(PointWithPriority(x: startX, y: startY, from: nil, distance: distanceCounter))
-    var finishPoint: PointWithPriority? = nil
-    
-    distanceCounter += 1
-    
-    while !stack.isEmpty {
-        stack = stack.sorted(by: { (point1, point2) -> Bool in
-            point1.distance > point2.distance
-        })
-        let v = stack.removeLast()
-        if visitControlArray[level1.count - v.y - 1][v.x] == 0 {
-            visitControlArray[level1.count - v.y - 1][v.x] = 1
-            let (possibleOptions, finish) = possibleToGoOptionsFromPosition(x: v.x, y: v.y, finishValue: 2)
-            
-            if possibleOptions.contains(.up) {
-                stack.append(PointWithPriority(x: v.x, y: v.y + 1, from: v, distance: distanceCounter))
-            }
-            if possibleOptions.contains(.right) {
-                stack.append(PointWithPriority(x: v.x + 1, y: v.y, from: v, distance: distanceCounter))
-            }
-            if possibleOptions.contains(.left) {
-                stack.append(PointWithPriority(x: v.x - 1, y: v.y, from: v,distance: distanceCounter))
-            }
-            if possibleOptions.contains(.down) {
-                stack.append(PointWithPriority(x: v.x, y: v.y - 1, from: v, distance: distanceCounter))
-            }
-            if finish {
-                finishPoint = stack.removeLast()
-                break
-            }
-            distanceCounter += 1
-        }
-    }
-    
-    
-
-    var pathCounter = 0
-    if finishPoint != nil {
-        var point = finishPoint
-        while point != nil {
-            let pathMarker = SKShapeNode(rectOf: CGSize(width: 8, height: 8))
-            pathMarker.position = CGPoint(x: arrayToGameZonePosition(coordinate: point!.x), y: arrayToGameZonePosition(coordinate: point!.y))
-            pathMarker.fillColor = .green
-            pathMarker.name = "pathMarker"
-            gameZone.addChild(pathMarker)
-            point = point!.from
-            pathCounter += 1
-        }
-    }
-    print(pathCounter)
-    
-}
+//func BFS(startX: Int, startY: Int, gameZone: GameZone) {
+//    var visitControlArray = Array(repeating: Array(repeating: 0, count: 24), count: 20)
+//    var stack = [Point]()
+//
+//    stack.append(Point(x: startX, y: startY, from: nil))
+//    var finishPoint: Point? = nil
+//
+//    while !stack.isEmpty {
+//        let v = stack.removeFirst()
+//        if visitControlArray[level1.count - v.y - 1][v.x] == 0 {
+//            visitControlArray[level1.count - v.y - 1][v.x] = 1
+//            let (possibleOptions, finish) = possibleToGoOptionsFromPosition(x: v.x, y: v.y, finishValue: 2)
+//
+//            if possibleOptions.contains(.up) {
+//                stack.append(Point(x: v.x, y: v.y + 1, from: v))
+//            }
+//            if possibleOptions.contains(.right) {
+//                stack.append(Point(x: v.x + 1, y: v.y, from: v))
+//            }
+//            if possibleOptions.contains(.left) {
+//                stack.append(Point(x: v.x - 1, y: v.y, from: v))
+//            }
+//            if possibleOptions.contains(.down) {
+//                stack.append(Point(x: v.x, y: v.y - 1, from: v))
+//            }
+//            if finish {
+//                finishPoint = stack.removeLast()
+//                break
+//            }
+//        }
+//    }
+//
+//
+//    var pathCounter = 0
+//
+//    if finishPoint != nil {
+//        var point = finishPoint
+//        while point != nil {
+//            let pathMarker = SKShapeNode(rectOf: CGSize(width: 12, height: 12))
+//            pathMarker.position = CGPoint(x: arrayToGameZonePosition(coordinate: point!.x), y: arrayToGameZonePosition(coordinate: point!.y))
+//            pathMarker.fillColor = .blue
+//            pathMarker.name = "pathMarker"
+//            gameZone.addChild(pathMarker)
+//            point = point!.from
+//            pathCounter += 1
+//        }
+//    }
+//
+//    print(pathCounter)
+//
+//}
+//
+//
+//
+//func UCS(startX: Int, startY: Int, gameZone: GameZone) {
+//    var visitControlArray = Array(repeating: Array(repeating: 0, count: 24), count: 20)
+//    var stack = [PointWithPriority]()
+//
+//    var distanceCounter = 0
+//    stack.append(PointWithPriority(x: startX, y: startY, from: nil, distance: distanceCounter))
+//    var finishPoint: PointWithPriority? = nil
+//
+//    distanceCounter += 1
+//
+//    while !stack.isEmpty {
+//        stack = stack.sorted(by: { (point1, point2) -> Bool in
+//            point1.distance > point2.distance
+//        })
+//        let v = stack.removeLast()
+//        if visitControlArray[level1.count - v.y - 1][v.x] == 0 {
+//            visitControlArray[level1.count - v.y - 1][v.x] = 1
+//            let (possibleOptions, finish) = possibleToGoOptionsFromPosition(x: v.x, y: v.y, finishValue: 2)
+//
+//            if possibleOptions.contains(.up) {
+//                stack.append(PointWithPriority(x: v.x, y: v.y + 1, from: v, distance: distanceCounter))
+//            }
+//            if possibleOptions.contains(.right) {
+//                stack.append(PointWithPriority(x: v.x + 1, y: v.y, from: v, distance: distanceCounter))
+//            }
+//            if possibleOptions.contains(.left) {
+//                stack.append(PointWithPriority(x: v.x - 1, y: v.y, from: v,distance: distanceCounter))
+//            }
+//            if possibleOptions.contains(.down) {
+//                stack.append(PointWithPriority(x: v.x, y: v.y - 1, from: v, distance: distanceCounter))
+//            }
+//            if finish {
+//                finishPoint = stack.removeLast()
+//                break
+//            }
+//            distanceCounter += 1
+//        }
+//    }
+//
+//
+//
+//    var pathCounter = 0
+//    if finishPoint != nil {
+//        var point = finishPoint
+//        while point != nil {
+//            let pathMarker = SKShapeNode(rectOf: CGSize(width: 8, height: 8))
+//            pathMarker.position = CGPoint(x: arrayToGameZonePosition(coordinate: point!.x), y: arrayToGameZonePosition(coordinate: point!.y))
+//            pathMarker.fillColor = .green
+//            pathMarker.name = "pathMarker"
+//            gameZone.addChild(pathMarker)
+//            point = point!.from
+//            pathCounter += 1
+//        }
+//    }
+//    print(pathCounter)
+//
+//}
 
 
 func possibleToGoOptionsFromPosition(x: Int, y: Int, finishValue: Int) -> ([Rotation], Bool) {
@@ -350,6 +356,53 @@ func possibleToGoOptionsFromPosition(x: Int, y: Int, finishValue: Int) -> ([Rota
     
     return (possibleOptions, false)
 }
+
+func possibleToGoOptionsFromPositionWithLevelCopy(x: Int, y: Int, finishValue: Int, levelCopy:[[Int]]) -> ([Rotation], Bool) {
+    var possibleOptions = [Rotation]()
+    
+    if x != 0 {
+        let leftPositionValue = levelCopy[y][x - 1]
+        if  leftPositionValue == 0 || leftPositionValue == finishValue {
+            if leftPositionValue == finishValue {
+                return ([.left], true)
+            }
+            possibleOptions.append(.left)
+        }
+    }
+    
+    if x != level1[0].count - 1 {
+        let rightPositionValue = levelCopy[y][x + 1]
+        if rightPositionValue == 0 || rightPositionValue == finishValue {
+            if rightPositionValue == finishValue {
+                return ([.right], true)
+            }
+            possibleOptions.append(.right)
+        }
+    }
+    
+    if y != 0 {
+        let downPositionValue = levelCopy[y - 1][x]
+        if  downPositionValue == 0 || downPositionValue == finishValue {
+            if downPositionValue == finishValue {
+                return ([.down], true)
+            }
+            possibleOptions.append(.down)
+        }
+    }
+    
+    if y != level1.count - 1 {
+        let upPositionValue = levelCopy[y + 1][x]
+        if upPositionValue == 0 || upPositionValue == finishValue {
+            if upPositionValue == finishValue {
+                return ([.up], true)
+            }
+            possibleOptions.append(.up)
+        }
+    }
+    
+    return (possibleOptions, false)
+}
+
 
 enum AlgEnum  {
     case dfs, bfs, ucs

@@ -64,7 +64,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         addChild(lifesLeftTextNumber)
         addChild(pointsText)
         addChild(pointsTextNumber)
-        player.playerMovement(movementArr: [AStarPoint](), gameZoneSize: gameZone.size)
+        player.playerMovement(movementArr: [AStarPoint](), gameZoneSize: gameZone.size, gameZone: gameZone)
         }
     
 
@@ -81,8 +81,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
                 if let enemy = node as? Enemy {
                     enemy.unpauseGame()
-                    enemy.move(level: level1)
-                    enemy.shoot(gameZone: self.gameZone)
+                    enemy.move(path: [Point]())
                 }
             }
         case Constants.e:
@@ -189,8 +188,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             newEnemy = false
             let enemy = Enemy(imageName: "enemy")
             gameZone.addChild(enemy)
-            enemy.move(level: level1)
-            enemy.shoot(gameZone: gameZone)
+            enemy.move(path: [Point]())
         }
         
       
