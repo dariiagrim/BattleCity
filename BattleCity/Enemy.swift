@@ -35,11 +35,11 @@ class Enemy: SKSpriteNode {
         self.physicsBody?.collisionBitMask = Constants.wallFlag | Constants.playerFlag | Constants.bulletFlag
     }
     
-    func move(path: [Point]) {
+    func move(path: [Point], gameZoneSize: CGSize, gameZone: GameZone) {
         guard !pause else { return }
         var pathCopy: [Point]
         if path.count == 0 {
-            pathCopy = DFS(startX: arrayX, startY: arrayY)
+            pathCopy = BFS(startX: arrayX, startY: arrayY)
         } else {
             pathCopy = path
         }
@@ -49,18 +49,19 @@ class Enemy: SKSpriteNode {
             let y = move.y
             let direction = move.direction
             self.zRotation = rotationToAngle(rotation: direction)
+            enemyShoot(x: prevXPosition, y: prevYPosition, direction: direction, gameZoneSize: gameZoneSize, gameZone: gameZone)
             run(
                 SKAction.sequence([SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.2), SKAction.run {
                     level1[self.prevYPosition][self.prevXPosition] = 0
                     level1[y][x] = 3
                     self.prevXPosition = x
                     self.prevYPosition = y
-                    self.move(path: pathCopy)
+                    self.move(path: pathCopy, gameZoneSize: gameZoneSize, gameZone: gameZone)
                 }]))
         } else {
             print("wait")
             run(SKAction.sequence([SKAction.wait(forDuration: 2), SKAction.run({
-                self.move(path: pathCopy)
+                self.move(path: pathCopy, gameZoneSize: gameZoneSize, gameZone: gameZone)
             })]))
         }
         
@@ -72,6 +73,17 @@ class Enemy: SKSpriteNode {
     
     func unpauseGame() {
         pause = false
+    }
+    func enemyShoot(x: Int, y: Int, direction: Rotation, gameZoneSize: CGSize, gameZone: GameZone) {
+        if checkIfSomethingIsOnTheWay(x: x, y: y, direction: direction, aim: 2) {
+            let bullet = Bullet(radius: 5)
+            let x = arrayToGameZonePosition(coordinate: x)
+            let y = arrayToGameZonePosition(coordinate: y)
+            let moveAction = bullet.shoot(direction: direction, position: CGPoint(x: x, y: y), gameZoneSize: gameZoneSize)
+            bullet.name = "bulletEnemy"
+            gameZone.addChild(bullet)
+            bullet.run(moveAction)
+        }
     }
 }
 

@@ -182,7 +182,7 @@ func BFS(startX: Int, startY: Int) -> [Point]{
             point = point.from!
             path.append(point)
         }
-        path.popLast()
+        _ = path.popLast()
     }
     var shortPath = [Point]()
     var counter = 0

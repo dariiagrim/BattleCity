@@ -81,7 +81,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             gameZone.enumerateChildNodes(withName: "enemy") { (node, unsafePointer) in
                 if let enemy = node as? Enemy {
                     enemy.unpauseGame()
-                    enemy.move(path: [Point]())
+                    enemy.move(path: [Point](), gameZoneSize: self.gameZone.size, gameZone: self.gameZone)
                 }
             }
         case Constants.e:
@@ -166,7 +166,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "bulletEnemy" && contact.bodyB.node?.name == "player") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyB.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             minusLife = true
@@ -174,7 +174,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "player" && contact.bodyB.node?.name == "bulletEnemy") {
             let x = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.x)
             let y = gameZoneToArrayPosition(coordinate: contact.bodyA.node!.position.y)
-            level1[level1.count - y - 1][x] = 0
+            level1[y][x] = 0
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             minusLife = true
@@ -188,7 +188,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             newEnemy = false
             let enemy = Enemy(imageName: "enemy")
             gameZone.addChild(enemy)
-            enemy.move(path: [Point]())
+            enemy.move(path: [Point](), gameZoneSize: self.gameZone.size, gameZone: self.gameZone)
         }
         
       
@@ -202,6 +202,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             lifesLeftTextNumber.text = "\(lifes)"
             player = Player(imageName: "player", gameZoneSize: gameZone.size)
             gameZone.addChild(player)
+            player.playerMovement(movementArr: [AStarPoint](), gameZoneSize: gameZone.size, gameZone: gameZone)
         }
     }
     
