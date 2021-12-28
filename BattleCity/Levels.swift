@@ -39,10 +39,18 @@ func getRandomMaze() {
         }
     }
     
-    level1[level1.count - 1][0] = 0
-    level1[level1.count - 1][11] = 5
-    level1[level1.count - 1][12] = 5
-    level1[level1.count - 2][11] = 5
-    level1[level1.count - 2][12] = 5
+    level1[0][0] = 0
+    level1[0][11] = 5
+    level1[0][12] = 5
+    level1[1][11] = 5
+    level1[1][12] = 5
+    level1[0][10] = 1
+    level1[0][13] = 1
+    level1[1][10] = 1
+    level1[1][13] = 1
+    level1[2][10] = 1
+    level1[2][11] = 1
+    level1[2][12] = 1
+    level1[2][13] = 1
 }
 

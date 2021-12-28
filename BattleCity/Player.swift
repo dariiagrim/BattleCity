@@ -76,8 +76,50 @@ class Player: SKSpriteNode {
     
         }
     
+    func playerMovementMinimax(gameZoneSize: CGSize, gameZone: GameZone) {
+        let x = gameZoneToArrayPosition(coordinate: position.x)
+        let y = gameZoneToArrayPosition(coordinate: position.y)
+        
+        let node = Node(x: x, y: y, direction: direction, isTerminal: false, value: -1000)
+        
+        let moveNode = minimaxWithAlphaBetaPruning(node: node, depth: 3, alpha: -1000, beta: 1000, isMaxPlayer: true)
+        
+        self.playerShoot(x: x, y: y, direction: moveNode.direction, gameZoneSize: gameZoneSize,gameZone: gameZone)
+        let direction = moveNode.direction
+        self.zRotation = rotationToAngle(rotation: direction)
+        run(SKAction.sequence([
+            SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: moveNode.x), y: arrayToGameZonePosition(coordinate: moveNode.y)), duration: 0.3),
+            SKAction.run { [weak self] in
+                level1[y][x] = 0
+                level1[moveNode.y][moveNode.x] = 2
+                self?.playerMovementMinimax(gameZoneSize: gameZoneSize,gameZone: gameZone)
+            }
+        ]))
+    }
+    
+    func playerMovementExpectimax(gameZoneSize: CGSize, gameZone: GameZone) {
+        let x = gameZoneToArrayPosition(coordinate: position.x)
+        let y = gameZoneToArrayPosition(coordinate: position.y)
+        
+        let node = Node(x: x, y: y, direction: direction, isTerminal: false, value: -1000)
+        
+        let moveNode = expectimax(node: node, depth: 3, isMaxPlayer: true)
+        
+        self.playerShoot(x: x, y: y, direction: moveNode.direction, gameZoneSize: gameZoneSize,gameZone: gameZone)
+        let direction = moveNode.direction
+        self.zRotation = rotationToAngle(rotation: direction)
+        run(SKAction.sequence([
+            SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: moveNode.x), y: arrayToGameZonePosition(coordinate: moveNode.y)), duration: 0.3),
+            SKAction.run { [weak self] in
+                level1[y][x] = 0
+                level1[moveNode.y][moveNode.x] = 2
+                self?.playerMovementExpectimax(gameZoneSize: gameZoneSize,gameZone: gameZone)
+            }
+        ]))
+    }
+    
     func playerShoot(x: Int, y: Int, direction: Rotation, gameZoneSize: CGSize, gameZone: GameZone) {
-        if checkIfSomethingIsOnTheWay(x: x, y: y, direction: direction, aim: 3) {
+        if checkIfSomethingIsOnTheWay(x: x, y: y, direction: direction, aim: 3) || checkIfSomethingIsOnTheWay(x: x, y: y, direction: direction, aim: 1){
             let bullet = Bullet(radius: 5)
             let x = arrayToGameZonePosition(coordinate: x)
             let y = arrayToGameZonePosition(coordinate: y)
@@ -93,19 +135,19 @@ func checkIfSomethingIsOnTheWay(x: Int, y: Int, direction: Rotation, aim: Int) -
     switch direction {
     case .up:
         for i in y..<level1.count {
-            if level1[i][x] == aim {
+            if level1[i][x] == aim{
                 return true
             }
         }
     case .down:
         for i in 0...y {
-            if level1[i][x] == aim {
+            if level1[i][x] == aim{
                 return true
             }
         }
     case .right:
         for i in x..<level1[y].count {
-            if level1[y][i] == aim {
+            if level1[y][i] == aim  {
                 return true
             }
         }

@@ -67,6 +67,61 @@ class Enemy: SKSpriteNode {
         
     }
     
+    func randomMove() {
+        var x = gameZoneToArrayPosition(coordinate: position.x)
+        var y = gameZoneToArrayPosition(coordinate: position.y)
+        
+        let prevX = x
+        let prevY = y
+        
+        var possibleOptions = [Rotation]()
+    
+        if x != 0 && level1[y][x - 1] == 0 {
+            possibleOptions.append(.left)
+        }
+        if x != level1[0].count - 1 && level1[y][x + 1] == 0 {
+            possibleOptions.append(.right)
+        }
+        if y != level1.count - 1 && level1[y + 1][x] == 0 {
+            possibleOptions.append(.up)
+        }
+        if y != 0 && level1[y - 1][x] == 0 {
+            possibleOptions.append(.down)
+        }
+        
+        let direction = possibleOptions.randomElement()
+        
+        switch direction {
+                case .down:
+                    y -= 1
+                    zRotation = .pi
+                    rotation = .down
+                case .up:
+                    y += 1
+                    zRotation = 0
+                    rotation = .up
+                case .left:
+                    x -= 1
+                    zRotation = .pi / 2
+                    rotation = .left
+                case .right:
+                    x += 1
+                    zRotation = .pi * 3 / 2
+                    rotation = .right
+                default:
+                    randomMove()
+                }
+                
+                run(SKAction.sequence([
+                    SKAction.move(to: CGPoint(x: arrayToGameZonePosition(coordinate: x), y: arrayToGameZonePosition(coordinate: y)), duration: 0.3),
+                    SKAction.run { [weak self] in
+                        self?.randomMove()
+                    }
+                ]))
+                level1[prevY][prevX] = 0
+                level1[y][x] = 3
+    }
+    
     func pauseGame() {
         pause = true
     }

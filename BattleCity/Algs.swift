@@ -150,6 +150,29 @@ func BFS(startX: Int, startY: Int) -> [Point]{
     stack.append(Point(x: startX, y: startY, from: nil, direction: .up))
     var finishPoint: Point? = nil
     
+    if !checkIfLevelIsValid(level1Copy: level1Copy) {
+        let (possibleOptions, finish) = possibleToGoOptionsFromPositionWithLevelCopy(x: startX, y: startY, finishValue: 2, levelCopy: level1Copy)
+        
+        var correctPath = [Point]()
+        if possibleOptions.contains(.up) {
+            correctPath.append(Point(x: startX, y: startY + 1, from: stack[0], direction: .up))
+            return correctPath
+        }
+        if possibleOptions.contains(.right) {
+            correctPath.append(Point(x: startX + 1, y: startY, from: stack[0], direction: .right))
+            return correctPath
+        }
+        if possibleOptions.contains(.left) {
+            correctPath.append(Point(x: startX - 1, y: startY, from: stack[0], direction: .left))
+            return correctPath
+        }
+        if possibleOptions.contains(.down) {
+            correctPath.append(Point(x: startX, y: startY - 1, from: stack[0], direction: .down))
+            return correctPath
+        }
+    }
+ 
+    
     while !stack.isEmpty {
         let v = stack.removeFirst()
         if visitControlArray[v.y][v.x] == 0 {
@@ -312,8 +335,7 @@ func BFS(startX: Int, startY: Int) -> [Point]{
 func possibleToGoOptionsFromPosition(x: Int, y: Int, finishValue: Int) -> ([Rotation], Bool) {
     var possibleOptions = [Rotation]()
     
-    let levelSize = level1.count
-    
+   
     if x != 0 {
         let leftPositionValue = level1[y][x - 1]
         if  leftPositionValue == 0 || leftPositionValue == finishValue {
@@ -406,4 +428,159 @@ func possibleToGoOptionsFromPositionWithLevelCopy(x: Int, y: Int, finishValue: I
 
 enum AlgEnum  {
     case dfs, bfs, ucs
+}
+
+func possibleMovesNodes(node: Node) -> [Node] {
+    var nodes = [Node]()
+    let x = node.x
+    let y = node.y
+   
+    if x != 0 {
+        if  level1[y][x - 1] == 0 {
+            nodes.append(Node(x: x - 1, y: y, direction: .left, isTerminal: false, value: 0))
+        }
+    }
+    
+    if x != level1[0].count - 1 {
+        if  level1[y][x + 1] == 0 {
+            nodes.append(Node(x: x + 1, y: y, direction: .right, isTerminal: false, value: 0))
+        }
+    }
+    
+    if y != 0 {
+        if  level1[y - 1][x] == 0 {
+            nodes.append(Node(x: x, y: y - 1, direction: .down, isTerminal: false, value: 0))
+        }
+    }
+    
+    if y != level1.count - 1 {
+        if  level1[y + 1][x] == 0 {
+            nodes.append(Node(x: x, y: y + 1, direction: .up, isTerminal: false, value: 0))
+        }
+    }
+    return (nodes)
+}
+
+
+
+func minimaxWithAlphaBetaPruning(node: Node, depth: Int, alpha: Double, beta: Double, isMaxPlayer: Bool) -> Node {
+    var alphaCopy = alpha
+    var betaCopy = beta
+    if depth == 0 || node.isTerminal {
+        return Node(x: node.x, y: node.y, direction: node.direction, isTerminal: node.isTerminal, value: evaluatePosition(x: node.x, y: node.y, direction: node.direction))
+    }
+    if isMaxPlayer {
+        var currentNode = Node(x: node.x, y: node.y, direction: node.direction, isTerminal: node.isTerminal, value: -1000)
+        let children = possibleMovesNodes(node: node)
+        for child in children {
+            let childNode = minimaxWithAlphaBetaPruning(node: child, depth: depth - 1, alpha: alphaCopy, beta: betaCopy, isMaxPlayer: false)
+            if childNode.value > currentNode.value {
+                currentNode = childNode
+            }
+           
+            if currentNode.value >= beta {
+                break
+            }
+            alphaCopy = max(alphaCopy, currentNode.value)
+        }
+        return currentNode
+    } else {
+        var currentNode = Node(x: node.x, y: node.y, direction: node.direction, isTerminal: node.isTerminal, value: 1000)
+        let children = possibleMovesNodes(node: node)
+        for child in children {
+            let childNode = minimaxWithAlphaBetaPruning(node: child, depth: depth - 1, alpha: alphaCopy, beta: betaCopy, isMaxPlayer: true)
+            if childNode.value < currentNode.value {
+                currentNode = childNode
+            }
+           
+            if currentNode.value <= alpha {
+                break
+            }
+            betaCopy = min(betaCopy, currentNode.value)
+        }
+        return currentNode
+    }
+}
+
+func expectimax(node: Node, depth: Int, isMaxPlayer: Bool) -> Node {
+    if depth == 0 || node.isTerminal {
+        return Node(x: node.x, y: node.y, direction: node.direction, isTerminal: node.isTerminal, value: evaluatePosition(x: node.x, y: node.y, direction: node.direction))
+    }
+    if isMaxPlayer {
+        var currentNode = Node(x: node.x, y: node.y, direction: node.direction, isTerminal: node.isTerminal, value: -1000)
+        let children = possibleMovesNodes(node: node)
+        for child in children {
+            var childNode = expectimax(node: child, depth: depth - 1,  isMaxPlayer: false)
+            childNode.value *= [Double](arrayLiteral: 0.25, 0.5, 0.75, 1).randomElement() ?? 1
+            if childNode.value > currentNode.value {
+                currentNode = childNode
+            }
+        }
+        return currentNode
+    } else {
+        var currentNode = Node(x: node.x, y: node.y, direction: node.direction, isTerminal: node.isTerminal, value: 1000)
+        let children = possibleMovesNodes(node: node)
+        for child in children {
+            var childNode = expectimax(node: child, depth: depth - 1,  isMaxPlayer: true)
+            childNode.value *= [Double](arrayLiteral: 0.25, 0.5, 0.75, 1).randomElement() ?? 1
+            if childNode.value < currentNode.value {
+                currentNode = childNode
+            }
+        }
+        return currentNode
+    }
+}
+
+
+struct Node {
+    let x: Int
+    let y: Int
+    let direction: Rotation
+    let isTerminal: Bool
+    var value: Double
+}
+
+
+func evaluatePosition(x: Int, y: Int, direction: Rotation) -> Double {
+    var eval: Double = 0
+    switch direction {
+    case .up:
+        for i in y..<level1.count {
+            if level1[i][x] == 3 {
+                eval -= Double(1) / Double(y - i)
+            }
+            if level1[i][x] == 1 {
+                eval += 0.1
+            }
+        }
+    case .down:
+        for i in 0...y {
+            if level1[i][x] == 3 {
+                eval -= Double(1) / Double(y - i)
+            }
+            if level1[i][x] == 1 {
+                eval += 0.1
+            }
+        }
+    case .right:
+        for i in x..<level1[y].count {
+            if level1[y][i] == 3 {
+                eval -= Double(1) / Double(x - i)
+            }
+            if level1[y][i] == 1 {
+                eval += 0.1
+            }
+        }
+    case .left:
+        for i in 0...x {
+            if level1[y][i] == 3 {
+                eval -= Double(1) / Double(x - i)
+            }
+            if level1[y][i] == 1 {
+                eval += 0.1
+            }
+        }
+    }
+    
+    return eval
 }

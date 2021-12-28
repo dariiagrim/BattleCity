@@ -13,7 +13,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
     private var gameZone: GameZone!
     private var player: Player!
     private var base: Base!
-    private var newEnemy = true
+    private var newEnemy = false
     private var minusLife = false
     private var lifes = 3
     private var lifesLeftText: SKLabelNode!
@@ -22,7 +22,10 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
     private var pointsText: SKLabelNode!
     private var pointsTextNumber: SKLabelNode!
     private var algs: [AlgEnum] = [.dfs, .bfs, .ucs]
-    
+    private let firstTypeEnemies = 3
+    private let secondTypeEnemies = 2
+    var expectimax = false
+    let startTime = Date()
     
     override func didMove(to view: SKView) {
         backgroundColor = #colorLiteral(red: 0.4454482198, green: 0.4839535356, blue: 0.5355114341, alpha: 1)
@@ -40,11 +43,12 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         pointsTextNumber.position = CGPoint(x: 950, y: 300)
         
         gameZone = GameZone(zoneColor: .black, zoneSize: CGSize(width: 840, height: 700))
-       
+        
         player = Player(imageName: "player", gameZoneSize: gameZone.size)
         base = Base(imageName: "base", gameZoneSize: gameZone.size)
-
+        
         getRandomMaze()
+        
         
         for (indexY, val)  in level1.enumerated() {
             for (indexX, wall) in val.enumerated() {
@@ -55,17 +59,36 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-            
+        
         gameZone.addChild(player)
         gameZone.addChild(base)
-                
+        
+        
+        for _ in 1...firstTypeEnemies {
+            let enemy = Enemy(imageName: "enemy")
+            gameZone.addChild(enemy)
+            enemy.move(path: [Point](), gameZoneSize: self.gameZone.size, gameZone: self.gameZone)
+        }
+        
+        for _ in 1...secondTypeEnemies {
+            let enemy = Enemy(imageName: "enemy")
+            gameZone.addChild(enemy)
+            enemy.randomMove()
+        }
+        
+        
         addChild(gameZone)
         addChild(lifesLeftText)
         addChild(lifesLeftTextNumber)
         addChild(pointsText)
         addChild(pointsTextNumber)
-        player.playerMovement(movementArr: [AStarPoint](), gameZoneSize: gameZone.size, gameZone: gameZone)
+        //        player.playerMovement(movementArr: [AStarPoint](), gameZoneSize: gameZone.size, gameZone: gameZone)
+        if expectimax {
+            player.playerMovementExpectimax(gameZoneSize: gameZone.size, gameZone: gameZone)
+        } else {
+            player.playerMovementMinimax(gameZoneSize: gameZone.size, gameZone: gameZone)
         }
+    }
     
 
     
@@ -85,7 +108,7 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
         case Constants.e:
-            newEnemy = true
+           print(level1)
         default:
             break
         }
@@ -135,7 +158,6 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.node?.removeFromParent()
             points += 100
             pointsTextNumber.text = "\(points)"
-            newEnemy = true
         }
         
         if (contact.bodyA.node?.name == "enemy" && contact.bodyB.node?.name == "bulletPlayer") {
@@ -164,13 +186,13 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (contact.bodyA.node?.name == "bulletEnemy" && contact.bodyB.node?.name == "player") {
-            contact.bodyA.node?.removeFromParent()
-            contact.bodyB.node?.removeFromParent()
             if level1[player.arrayY][player.arrayX] == 2 {
                 level1[player.arrayY][player.arrayX] = 0
             } else if level1[player.prevYPosition][player.prevXPosition] == 2 {
                 level1[player.prevYPosition][player.prevXPosition] = 0
             }
+            contact.bodyA.node?.removeFromParent()
+            contact.bodyB.node?.removeFromParent()
             minusLife = true
         }
         if (contact.bodyA.node?.name == "player" && contact.bodyB.node?.name == "bulletEnemy") {
@@ -195,12 +217,18 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
             enemy.move(path: [Point](), gameZoneSize: self.gameZone.size, gameZone: self.gameZone)
         }
         
+        if points >= 1000 {
+            writeResultsToFile()
+            openStartScene()
+        }
+        
       
         
         if minusLife {
             minusLife = false
             lifes -= 1
             if lifes <= 0 {
+                writeResultsToFile()
                 openStartScene()
             }
             lifesLeftTextNumber.text = "\(lifes)"
@@ -214,5 +242,21 @@ class AnotherScene: SKScene, SKPhysicsContactDelegate {
         let scene = GameScene(size: self.view?.bounds.size ?? .zero)
         scene.scaleMode = .aspectFill
         view?.presentScene(scene, transition: .doorway(withDuration: 0.5))
+    }
+    
+    private func writeResultsToFile() {
+        let time = Date().timeIntervalSince(startTime)
+        let fileURL = URL(fileURLWithPath: "results.csv", isDirectory: false)
+        if !FileManager.default.fileExists(atPath: fileURL.path) {
+            FileManager.default.createFile(atPath: fileURL.path, contents: "win,time,score,algo\n".data(using: .utf8), attributes: nil)
+        }
+        guard let handle = FileHandle(forWritingAtPath: fileURL.path) else { return }
+
+        defer {
+            try! handle.close()
+        }
+
+        try! handle.seekToEnd()
+        try! handle.write(contentsOf: "\(points >= 1000 ? "win" : "lose"),\(time),\(points),\(self.expectimax ? "expectimax" : "minimax")\n".data(using: .utf8)!)
     }
 }

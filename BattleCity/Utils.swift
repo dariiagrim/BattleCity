@@ -36,3 +36,17 @@ func rotationToAngle(rotation: Rotation) -> CGFloat{
     }
     return angle
 }
+
+
+func checkIfLevelIsValid(level1Copy: [[Int]]) -> Bool {
+    var counter = 0
+    for row in level1 {
+        for element in row {
+            if element == 2 {
+                counter += 1
+            }
+        }
+    }
+    
+    return counter == 1
+}
